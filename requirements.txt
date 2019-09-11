@@ -1,3 +1,4 @@
 pdfminer.six
 chardet==3.0.4
-//nltk
+nltk
+fpdf

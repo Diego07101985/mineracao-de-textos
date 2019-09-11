@@ -4,7 +4,7 @@ install:
 	- virtualenv ../mestrado_cefet
 	- ( \
        . bin/activate; \
-       pip3 install -r requirements.txt; \
+       pip install -r requirements.txt; \
     )
 start:
 	- ( \
