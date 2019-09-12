@@ -1,7 +1,7 @@
 # Tarefa para o dia 11
 
 
-## Pleliminares
+##  Importante
 Criar um programa para extrair arquivos de um pdf
 Necessário python 3. Caso não tenha o nltk é necessário fazer o dowload.
 
