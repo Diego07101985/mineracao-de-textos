@@ -5,8 +5,9 @@
 Criar um programa para extrair arquivos de um pdf
 Necessário python 3. Caso não tenha o nltk é necessário fazer o dowload.
 
-```import nltk```
-```>>> nltk.download()```
+```import nltk```  
+
+```>>> nltk.download()```  
 
 Depois a chamada nltk.dowload() pode ser retirada
 
