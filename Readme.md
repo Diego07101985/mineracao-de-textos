@@ -15,5 +15,6 @@ Depois a chamada nltk.dowload() pode ser retirada
 
 No / do diretorio mestrado_cefet  execute os comandos:
 
-```make install```
-```make run```
+```make install```  
+
+```make run```  
