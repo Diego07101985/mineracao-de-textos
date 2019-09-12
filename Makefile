@@ -4,10 +4,10 @@ install:
 	- virtualenv ../mestrado_cefet
 	- ( \
        . bin/activate; \
-       pip install -r requirements.txt; \
+       pip3 install -U -r requirements.txt; \
     )
-start:
+run:
 	- ( \
        . bin/activate; \
-      python main.py \
+      python3 main.py \
     )
