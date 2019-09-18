@@ -1,40 +1,35 @@
 from nltk.tokenize import word_tokenize
 from nltk import FreqDist
 from pdf_service_manager import ServiceManagerPdf
+from vector_space_similarity import ServiceTextMining
 from models import PdfOutput
 
 import csv
 import string
+import glob2
 
 
 def main():
-    file_string = ""
-    txt_file = open("trabalho1.txt", "r+")
-    csv_file = open("trabalho1.csv", "w+")
-    csv_manage = csv.writer(csv_file, delimiter=";", quoting=csv.QUOTE_MINIMAL)
-    base_text = txt_file.read()
-    sentences = word_tokenize(base_text)
-    frequency = FreqDist(sentences)
+    files = []
+    fileNames = sorted(glob2.glob("docs/*.txt"))
+    for filename in fileNames:
+        files.append(open(filename, "r+").read())
 
-    print("texto : {0}".format(base_text))
+    count = 0
 
-    print("Total de palavras : {0}".format(frequency.N()))
-    print("Total de Termos : {0}".format(len(frequency.keys())))
-    print("")
+    while count < len(files):
+        serviceTextMining = ServiceTextMining()
+        terms = serviceTextMining.select_terms([files[count], files[count - 1]])
+        relevation_matriz_docs = serviceTextMining.create_matriz_tf_terms(terms)
 
-    print("Tabela de Frequência de Termos")
-    print("")
+        print(relevation_matriz_docs)
+        print(
+            serviceTextMining.cosine_similarity(
+                [files[count], files[count - 1]], relevation_matriz_docs
+            )
+        )
 
-    for key in frequency.keys():
-        csv_manage.writerow([key, str(frequency.get(key))])
-        print("Termo: {0}  Total: {1}".format(key, str(frequency.get(key))))
-
-    pdfOutput = PdfOutput(frequency, frequency.N(), len(frequency.keys()), base_text)
-    servicePdfManager = ServiceManagerPdf()
-    servicePdfManager.writePdf(pdfOutput)
-
-    txt_file.close()
-    csv_file.close()
+        count += 1
 
 
 if __name__ == "__main__":

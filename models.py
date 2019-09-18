@@ -11,3 +11,4 @@ class PdfOutput:
 
 class HtmlPdf(FPDF, HTMLMixin):
     pass
+
