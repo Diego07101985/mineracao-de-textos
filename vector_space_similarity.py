@@ -62,8 +62,6 @@ class ServiceTextMining:
                     element += math.pow(first_doc[indice_term], 2)
                     element2 += math.pow(second_doc[indice_term], 2)
 
-                print(element)
-                print(element2)
                 denominador = math.sqrt(element) * math.sqrt(element2)
                 similaridade_cossenos.append(numerador / denominador)
 
