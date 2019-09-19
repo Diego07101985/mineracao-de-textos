@@ -12,3 +12,8 @@ class PdfOutput:
 class HtmlPdf(FPDF, HTMLMixin):
     pass
 
+
+class DocumentSimilary:
+    def __init__(self, files, coeficient):
+        self.files = files
+        self.coeficient = coeficient
