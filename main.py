@@ -22,30 +22,46 @@ def main():
     coefient_doc = []
     coeficient_array = []
 
-    while count < len(files):
-        serviceTextMining = ServiceTextMining()
-        terms = serviceTextMining.select_terms([files[count], files[count - 1]])
-        relevation_matriz_docs = serviceTextMining.create_matriz_tf_terms(terms)
+    serviceTextMining = ServiceTextMining()
 
-        document = DocumentSimilary(
-            [fileNames[count], fileNames[count - 1]],
-            serviceTextMining.cosine_similarity(
-                [files[count], files[count - 1]], relevation_matriz_docs
-            ),
-        )
+    terms = serviceTextMining.select_terms(files)
+    matriz_tf = serviceTextMining.create_matriz_tf_terms(terms)
+    matriz_df = serviceTextMining.create_matriz_df_terms(terms, files)
 
-        coeficient_array.append(document.coeficient)
-        coefient_doc.append(document)
-        count += 1
+    result = []
 
-    greater_similarity = np.array(coeficient_array).max()
-    for doc in coefient_doc:
-        if greater_similarity == doc.coeficient:
+    # iterate through rows of X
+    for i in range(len(matriz_tf)):
+        result.append([])
+
+        # # iterate through columns of Y
+        for j in range(len(matriz_df)):
+            # iterate through rows of Y
+            #
             print(
-                "Documentos {0} distancia dos cossenos {1}".format(
-                    doc.files, doc.coeficient
+                "linha {0} coluna {1} TF {2}  DF {3}= {4}".format(
+                    i,
+                    j,
+                    matriz_tf[i][j],
+                    matriz_df[j][1],
+                    round(matriz_df[j][1] * matriz_tf[i][j], 3),
                 )
             )
+            result[i].append(round(matriz_df[j][1] * matriz_tf[i][j], 3))
+
+    print(result)
+
+    #     for k in range(len(matriz_df)):
+    #         result[i][j] += matriz_tf[i][k] * matriz_df[k][j]
+
+    # greater_similarity = np.array(coeficient_array).max()
+    # for doc in coefient_doc:
+    #     if greater_similarity == doc.coeficient:
+    #         print(
+    #             "Documentos {0} distancia dos cossenos {1}".format(
+    #                 doc.files, doc.coeficient
+    #             )
+    #         )
 
 
 if __name__ == "__main__":

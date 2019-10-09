@@ -85,3 +85,23 @@ class ServiceTextMining:
             column = []
 
         return np.transpose(matriz_terms)
+
+    def create_matriz_df_terms(self, terms, docs):
+        matriz_terms = []
+        count_term = []
+
+        for term in terms:
+            count_term_each_doc = 0
+            for doc in docs:
+                if term in doc:
+                    count_term_each_doc += 1
+            if count_term_each_doc > 0:
+                matriz_terms.append(
+                    [term, math.log10((len(docs) / count_term_each_doc))]
+                )
+            else:
+                matriz_terms.append([term, 0])
+
+        column = []
+        return matriz_terms
+
