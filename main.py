@@ -1,8 +1,8 @@
-from nltk.tokenize import word_tokenize
-from nltk import FreqDist
 from pdf_service_manager import ServiceManagerPdf
 from vector_space_similarity import ServiceTextMining
 from models import PdfOutput, DocumentSimilary
+
+
 import numpy as np
 
 
@@ -13,55 +13,66 @@ import glob2
 
 def main():
     files = []
-    fileNames = sorted(glob2.glob("docs/*.txt"))
+    # 1 - Conjunto de dados curto
+    fileNames = sorted(glob2.glob("curto/*.txt"))
     for filename in fileNames:
         files.append(open(filename, "r+").read())
 
-    count = 0
-
-    coefient_doc = []
-    coeficient_array = []
-
     serviceTextMining = ServiceTextMining()
-
+    print("Tópico 1 - Matrix TF * IDF")
     terms = serviceTextMining.select_terms(files)
-    matriz_tf = serviceTextMining.create_matriz_tf_terms(terms)
-    matriz_df = serviceTextMining.create_matriz_df_terms(terms, files)
+    matriz_tf = serviceTextMining.create_matriz_itf_terms(terms)
+    matriz_df = serviceTextMining.create_matriz_idf_terms(terms, files)
+    matriz_tf_df = serviceTextMining.create_matriz_tf_df_terms(matriz_tf, matriz_df)
 
-    result = []
+    print("Criando arquivo csv")
+    csv_file = open("trabalho3.csv", "w+")
+    csv_manages = csv.writer(csv_file, delimiter=",", quoting=csv.QUOTE_MINIMAL)
+    csv_file.write("@terms")
+    csv_file.write("\n")
+    csv_manages.writerow(terms)
+    csv_file.write("@matriz_tf")
+    csv_file.write("\n")
+    for line in range(len(matriz_tf)):
+        csv_manages.writerow(matriz_tf[line])
+    csv_file.write("@matriz_df")
+    csv_file.write("\n")
+    csv_manages.writerow(matriz_df)
+    csv_file.write("@matriz_df_idf")
+    csv_file.write("\n")
+    for line in range(len(matriz_tf_df)):
+        csv_manages.writerow(matriz_tf_df[line])
 
-    # iterate through rows of X
-    for i in range(len(matriz_tf)):
-        result.append([])
+    # Deve
 
-        # # iterate through columns of Y
-        for j in range(len(matriz_df)):
-            # iterate through rows of Y
-            #
-            print(
-                "linha {0} coluna {1} TF {2}  DF {3}= {4}".format(
-                    i,
-                    j,
-                    matriz_tf[i][j],
-                    matriz_df[j][1],
-                    round(matriz_df[j][1] * matriz_tf[i][j], 3),
-                )
+    # Com o	conjunto de	dados longo
+    query = "but kate's job  , if you will "
+
+    print("Calculo distancia dos cossenos a partir de uma query = {0}".format(query))
+    distance = serviceTextMining.calc_distance_cosseno_in_query(query)
+
+    print("Tópico 2 - 10 Documentos mais relevantes")
+    nmax = serviceTextMining.Nmaxelements(distance, 10)
+
+    for document in nmax:
+        print(
+            "Documento {0} distancia dos cossenos {1}".format(
+                document.file, document.coeficient
             )
-            result[i].append(round(matriz_df[j][1] * matriz_tf[i][j], 3))
+        )
+    pdfOutput = PdfOutput(
+        None,
+        np.transpose(matriz_tf),
+        matriz_df,
+        np.transpose(matriz_tf_df),
+        terms,
+        fileNames,
+        nmax,
+        query,
+    )
 
-    print(result)
-
-    #     for k in range(len(matriz_df)):
-    #         result[i][j] += matriz_tf[i][k] * matriz_df[k][j]
-
-    # greater_similarity = np.array(coeficient_array).max()
-    # for doc in coefient_doc:
-    #     if greater_similarity == doc.coeficient:
-    #         print(
-    #             "Documentos {0} distancia dos cossenos {1}".format(
-    #                 doc.files, doc.coeficient
-    #             )
-    #         )
+    servicePdfManager = ServiceManagerPdf()
+    servicePdfManager.writePdf(pdfOutput)
 
 
 if __name__ == "__main__":
