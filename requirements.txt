@@ -5,3 +5,6 @@ fpdf
 numpy
 glob2
 sklearn
+matplotlib
+pandas
+toolz

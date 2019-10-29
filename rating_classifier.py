@@ -17,14 +17,14 @@ class Rating:
         actuals = self.get_documents_actual(docs, classes).elements
         new_predicts = np.copy(actuals)
 
-        for predict in results:
-            index = 0
-            for actual in docs:
-                if predict.file == actual:
-                    if(self.clazz_predict != predict.clasz):
-                        new_predicts[index] = self.clazz_predict
+        # for predict in results:
+        #     index = 0
+        #     for actual in docs:
+        #         if predict.file == actual:
+        #             if(self.clazz_predict != predict.clasz):
+        #                 new_predicts[index] = self.clazz_predict
 
-                index += 1
+        #         index += 1
         return [actuals, new_predicts]
 
     def precision_value(self, results, docs, classes):

@@ -200,7 +200,6 @@ class ServiceTextMining:
             for j in range(len(matriz_df)):
                 # iterate through rows of Y
                 result[i].append(round(matriz_df[j][2] * matriz_tf[i][j], 3))
-
         return result
 
     def calc_euclidian_distance_in_query(self, query):
