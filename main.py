@@ -3,7 +3,7 @@ from vector_space_similarity import ServiceTextMining
 from models import PdfOutput, DocumentSimilary
 from classification.lazy import Knn
 from rating_classifier import Rating
-from unsupervisioned import K_Means
+from kmeans_spark import K_Means
 
 
 import numpy as np
@@ -26,12 +26,12 @@ def main():
     # serviceTextMining = ServiceTextMining()
     # distance = serviceTextMining.calc_euclidian_distance_in_query(query)
     files = []
-    fileNames = sorted(glob2.glob("curto/*.txt"))
+    fileNames = sorted(glob2.glob("longo/*.txt"))
     for filename in fileNames:
         files.append(open(filename, "r+").read())
 
     serviceTextMining = ServiceTextMining()
-    print("Tópico 1 - Matrix TF * IDF")
+    # print("Tópico 1 - Matrix TF * IDF")
     terms = serviceTextMining.select_terms(files)
     matriz_tf = serviceTextMining.create_matriz_itf_terms(terms)
     matriz_df = serviceTextMining.create_matriz_idf_terms(terms, files)
@@ -40,6 +40,13 @@ def main():
 
     kmean = K_Means(3)
     kmean.execute(matriz_tf_df)
+
+    for cluster in kmean.execute(matriz_tf_df):
+        print("Cluster {0} \n".format(cluster[0]))
+        for doc in cluster[1]:
+            if(doc.distance_cosine != 0):
+                print("Doc {0}".format(doc.id))
+                print("Distance {0}".format(doc.distance_cosine))
 
     # list_list = []
     # list1 = [2, 30, 20, 6, 42]

@@ -9,8 +9,8 @@ class Rating:
     def confusion_matrix(self, results, docs, classes):
         values_predicts = self.conf_values_predicts(results, docs, classes)
 
-        print(values_predicts[1])
-        print(values_predicts[0])
+        # print(values_predicts[1])
+        # print(values_predicts[0])
         return confusion_matrix(values_predicts[1], values_predicts[0], labels=classes)
 
     def conf_values_predicts(self, results, docs, classes):
