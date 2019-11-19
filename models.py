@@ -32,3 +32,9 @@ class DocumentSimilary:
         self.file = file
         self.coeficient = coeficient
 
+
+class DocumentSimilaryEuclidian:
+    def __init__(self, file, coeficient, clasz):
+        self.file = file
+        self.coeficient = coeficient
+        self.clasz = clasz
