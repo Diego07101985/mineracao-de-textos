@@ -16,37 +16,37 @@ import glob2
 
 def main():
 
-    # query = "HAL is a multi-disciplinary open access"
+    query = "HAL is a multi-disciplinary open access"
     # query = "Part-of-speech (PoS ) tagging is one of the earliest steps of NLP. However, in spite of its linguistic nature, linguistic studies comparing the impact of diﬀerent"
     fileNames = sorted(glob2.glob(
-        "./docs/NLP/summarization_dataset.txt"))
+        "./teste/temporal_tagging_of_noisey.txt"))
     for filename in fileNames:
         query = open(filename, "r+").read()
 
-    # serviceTextMining = ServiceTextMining()
-    # distance = serviceTextMining.calc_euclidian_distance_in_query(query)
-    files = []
-    fileNames = sorted(glob2.glob("longo/*.txt"))
-    for filename in fileNames:
-        files.append(open(filename, "r+").read())
-
     serviceTextMining = ServiceTextMining()
-    # print("Tópico 1 - Matrix TF * IDF")
-    terms = serviceTextMining.select_terms(files)
-    matriz_tf = serviceTextMining.create_matriz_itf_terms(terms)
-    matriz_df = serviceTextMining.create_matriz_idf_terms(terms, files)
-    matriz_tf_df = serviceTextMining.create_matriz_tf_df_terms(
-        matriz_tf, matriz_df)
+    distance = serviceTextMining.calc_euclidian_distance_in_query(query)
+    # files = []
+    # fileNames = sorted(glob2.glob("longo/*.txt"))
+    # for filename in fileNames:
+    #     files.append(open(filename, "r+").read())
 
-    kmean = K_Means(3)
-    kmean.execute(matriz_tf_df)
+    # serviceTextMining = ServiceTextMining()
+    # # print("Tópico 1 - Matrix TF * IDF")
+    # terms = serviceTextMining.select_terms(files)
+    # matriz_tf = serviceTextMining.create_matriz_itf_terms(terms)
+    # matriz_df = serviceTextMining.create_matriz_idf_terms(terms, files)
+    # matriz_tf_df = serviceTextMining.create_matriz_tf_df_terms(
+    #     matriz_tf, matriz_df)
 
-    for cluster in kmean.execute(matriz_tf_df):
-        print("Cluster {0} \n".format(cluster[0]))
-        for doc in cluster[1]:
-            if(doc.distance_cosine != 0):
-                print("Doc {0}".format(doc.id))
-                print("Distance {0}".format(doc.distance_cosine))
+    # kmean = K_Means(3)
+    # kmean.execute(matriz_tf_df)
+
+    # for cluster in kmean.execute(matriz_tf_df):
+    #     print("Cluster {0} \n".format(cluster[0]))
+    #     for doc in cluster[1]:
+    #         if(doc.distance_cosine != 0):
+    #             print("Doc {0}".format(doc.id))
+    #             print("Distance {0}".format(doc.distance_cosine))
 
     # list_list = []
     # list1 = [2, 30, 20, 6, 42]
@@ -76,23 +76,42 @@ def main():
 
     # print("distance {0}".format(len(distance)))
 
-    # knn = Knn()
-    # nmin = knn.NminElements(distance, 7)
+    print("Total \n")
 
-    # fileNames = sorted(glob2.glob("./docs/**/*.txt"))
+    # for d in distance:
+    #     print(d.clasz)
+    #     print(d.coeficient)
 
-    # classes = []
-    # for fileName in fileNames:
-    #     clasz = fileName.split("/")[2]
-    #     if clasz not in classes:
-    #         classes.append(clasz)
+    knn = Knn()
+    nmin = knn.NminElements(distance, 5)
 
-    # rt = Rating()
-    # rt.set_class_predict("NLP")
-    # print(rt.confusion_matrix(nmin, fileNames, classes))
-    # print(rt.precision_value(nmin, fileNames, classes))
-    # print(rt.recall_score(nmin, fileNames, classes))
-    # print(rt.precision_recall_fscore_support(nmin, fileNames, classes))
+    fileNames = sorted(glob2.glob("./docs/**/*.txt"))
+
+    classes = []
+    for fileName in fileNames:
+        clasz = fileName.split("/")[2]
+        if clasz not in classes:
+            classes.append(clasz)
+
+    rt = Rating()
+    rt.set_class_predict("Analyze")
+
+    # print("3 mais proximo")
+
+    file_names_ne = []
+    for nearest in nmin:
+        print(nearest.clasz)
+        print(nearest.coeficient)
+        print(nearest.file)
+        file_names_ne.append(nearest.file)
+
+    print(rt.confusion_matrix(nmin, file_names_ne, classes))
+    print("Precision value {0}".format(
+        rt.precision_value(nmin, file_names_ne, classes)))
+    print("Recall Score {0}".format(
+        rt.recall_score(nmin, file_names_ne, classes)))
+    print("F score {0}".format(
+        rt.precision_recall_fscore_support(nmin, file_names_ne, classes)))
 
     # print("distance {0}".format(len(distance)))
     # for document in distance:

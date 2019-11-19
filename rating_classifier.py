@@ -7,24 +7,23 @@ class Rating:
         self.clazz_predict = None
 
     def confusion_matrix(self, results, docs, classes):
-        values_predicts = self.conf_values_predicts(results, docs, classes)
 
-        # print(values_predicts[1])
-        # print(values_predicts[0])
+        values_predicts = self.conf_values_predicts(results, docs, classes)
         return confusion_matrix(values_predicts[1], values_predicts[0], labels=classes)
 
     def conf_values_predicts(self, results, docs, classes):
+
         actuals = self.get_documents_actual(docs, classes).elements
+
         new_predicts = np.copy(actuals)
 
-        # for predict in results:
-        #     index = 0
-        #     for actual in docs:
-        #         if predict.file == actual:
-        #             if(self.clazz_predict != predict.clasz):
-        #                 new_predicts[index] = self.clazz_predict
+        for predict in results:
+            index = 0
+            for actual in docs:
+                if predict.file == actual:
+                    new_predicts[index] = self.clazz_predict
+                index += 1
 
-        #         index += 1
         return [actuals, new_predicts]
 
     def precision_value(self, results, docs, classes):

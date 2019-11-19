@@ -1,3 +1,15 @@
+Indexing Names of Persons in a Large
+Dataset of a Newspaper
+Juliana P. C. Pirovani , Matheus Nogueira, and Elias de Oliveira(B)
+Programa de P´
+os-Gradua¸ca
+˜o em Inform´
+atica,
+Universidade Federal Do Esp´ırito Santo, Av. Fernando Ferrari 514 – Goiabeiras,
+Vit´
+oria, ES 29075-910, Brazil
+juliana.campos@ufes.br, elias@lcad.inf.ufes.br
+
 Abstract. An index is a very good tool for ﬁnding the necessary information from a set of documents. So far, the extant index tools in both the
 printed and digital newspaper versions are not suﬃcient to help users ﬁnd
 information. Users must browse the entire newspaper to fulﬁll their needs
@@ -345,3 +357,83 @@ and correcting the training data from a given newspaper corpus by being able
 to incrementally learn from the comparison of the human versus the automatic
 annotation approach.
 Acknowledgments. We would like to thank the reviewers for their insightful comments on the paper, as these comments led us to an improvement of the work.
+
+References
+1. Tesseract (2015). https://code.google.com/p/tesseract-ocr/. Acesso em 06 May
+2015
+2. Jiang, J.: Information extraction from text. In: Aggarwal, C., Zhai, C. (eds.) Mining
+Text Data, pp. 11–41. Springer, Boston (2012). https://doi.org/10.1007/978-14614-3223-4 2
+3. Amaral, D., Fonseca, E., Lopes, L., Vieira, R.: Comparative analysis of Portuguese
+named entities recognition tools. In: Calzolari, N., et al. (eds.) Proceedings of the
+Ninth International Conference on Language Resources and Evaluation (LREC
+2014), pp. 2554–2558. European Language Resources Association (ELRA), Reykjavik, May 2014
+4. Amaral, D., Vieira, R.: O Reconhecimento de Entidades Nomeadas por meio de
+Conditional Random Fields para a L´ıngua Portuguesa. In: Proceedings of the IX
+Brazilian Symposium in Information and Human Language Technology - STIL,
+Fortaleza, CE, October 2013
+5. Baptista, J.: A local grammar of proper nouns. Semin´
+arios de Lingu´ıstica 2, 21–37
+(1998)
+6. Campos, J., Oliveira, E.: Extra¸ca
+˜o de Nomes de Pessoas em Textos em Portuguˆes:
+uma Abordagem Usando Gram´
+aticas Locais. In: Computer on the Beach 2015.
+SBC, Florian´
+opolis, March 2015
+7. Friburger, N., Maurel, D.: Finite-state transducer cascades to extract named entities in texts. Theor. Comput. Sci. 313(1), 93–104 (2004)
+8. Grishman, R., Sundheim, B.: Message understanding conference-6: a brief history.
+In: Proceedings of the 16th Conference on Computational Linguistics, COLING
+1996, vol. 1, pp. 466–471. Association for Computational Linguistics, Stroudsburg
+(1996)
+9. Gross, M.: The construction of local grammars. In: Roche, E., Schabes, Y. (eds.)
+Finite-State Language Processing, Language, Speech, and Communication, Cambridge, Mass, pp. 329–354 (1997)
+10. Konkol, M., Konop´ık, M.: Segment representations in named entity recognition.
+In: Kr´
+al, P., Matouˇsek, V. (eds.) TSD 2015. LNCS (LNAI), vol. 9302, pp. 61–70.
+Springer, Cham (2015). https://doi.org/10.1007/978-3-319-24033-6 7
+11. Krstev, C., Vitas, D., Obradovi´c, I., Utvi´c, M.: E-dictionaries and ﬁnite-state
+automata for the recognition of named entities. In: Proceedings of the 9th International Workshop on Finite State Methods and Natural Language Processing,
+FSMNLP 2011, pp. 48–56. Association for Computational Linguistics (2011). ISBN
+978-3-642-14769-2
+
+Indexing Names of Persons in a Large Dataset of a Newspaper
+
+155
+
+12. Kulkarni, A.: CRF based bio-medical named entity recognition. Int. J. Emerg.
+Technol. Comput. Sci. 3(2), 135–139 (2018)
+13. Laﬀerty, J., McCallum, A., Pereira, F.: conditional random ﬁelds: probabilistic
+models for segmenting and labeling sequence data. In: Proceedings of the Eighteenth International Conference on Machine Learning, ICML 2001, vol. 1, pp.
+282–289 (2001)
+14. Milidi´
+u, R.L., Duarte, J.C., Cavalcante, R.: Machine learning algorithms for Portuguese named entity recognition. Inteligencia Artiﬁcial. Revista Iberoamericana
+de Inteligencia Artiﬁcial 11(36), 65–75 (2007)
+15. Nogueira, M., Oliveira, E.: Estrat´egias de Corre¸ca
+˜o de Erros de Extratores de
+Palavras em Portuguˆes. In: 5th Symposium on Knowledge Discovery, Mining and
+Learning - KDMILE. SBC, October 2017
+16. Pellucci, P.R.S., Paula, R.R.d., Silva, W.B.d.O., Ladeira, A.P.: Utiliza¸ca
+˜o de
+T´ecnicas de Aprendizado de M´
+aquina no Reconhecimento de Entidades Nomeadas
+no Portuguˆes. e-Xacta 4(1), 73–81 (2011)
+17. Pirovani, J.P.C., de Oliveira, E.: CRF+LG: a hybrid approach for the portuguese
+named entity recognition. In: Abraham, A., Muhuri, P.K., Muda, A.K., Gandhi,
+N. (eds.) ISDA 2017. AISC, vol. 736, pp. 102–113. Springer, Cham (2018). https://
+doi.org/10.1007/978-3-319-76348-4 11
+18. Pirovani, J., Oliveira, E.: Portuguese Named Entity Recognition using Conditional
+Random Fields and Local Grammars. Miyazaki, Japan (2018)
+19. Pirovani, J., Spalenza, M., Oliveira, E.: Gera¸ca
+˜o Autom´
+atica de Quest˜
+oes a Partir do Reconhecimento de Entidades Nomeadas em Textos Did´
+aticos. In: XXVIII
+Simp´
+osio Brasileiro de Inform´
+atica na Educa¸ca
+˜o (SBIE). SBC, Cear´
+a (2017)
+20. Santos, C.D., Zadrozny, B.: Learning character-level representations for part-ofspeech tagging. In: Proceedings of the 31st International Conference on Machine
+Learning - ICML, pp. 1818–1826, Beijing, China (2014)
+
+

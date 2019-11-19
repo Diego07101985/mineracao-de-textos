@@ -1,0 +1,503 @@
+Temporal Tagging of Noisy Clinical Texts
+in Brazilian Portuguese
+Rafael Faria de Azevedo(B) , Jo˜
+ao Pedro Santos Rodrigues ,
+Mayara Regina da Silva Reis , Claudia Maria Cabral Moro ,
+and Emerson Cabrera Paraiso
+Pontif´ıcia Universidade Cat´
+olica do Paran´
+a, R. Imac. Concei¸ca
+˜o,
+1155 - Prado Velho, Curitiba, PR, Brazil
+{rafael,paraiso}@ppgia.pucpr.br, jpsanr@gmail.com,
+mayara.reis@outlook.com, c.moro@pucpr.br
+http://www.pucpr.br
+
+Abstract. Temporal expressions are present in several types of texts,
+including clinical ones. The current research over temporal expressions
+has been done by the use of rule-based systems, machine learning or
+hybrid approaches, in most cases, over annotated (labeled) news texts
+correctly written in English. In this paper, we propose a method to
+extract and normalize temporal expressions from noisy and unlabeled
+clinical texts (discharge summaries) written in Brazilian Portuguese
+using a rule-based approach. The obtained results are similar to the stateof-the-art researches made with the same purpose in other languages. The
+proposed method reached a F1 score of 88.92% for the extraction step
+and, a F1 score of 87.89% for the normalization step.
+
+Keywords: Temporal tagging
+
+1
+
+· Clinical texts · Rules
+
+Introduction
+
+It is common to ﬁnd words which indicate time in text. However, to make these
+words useful, it is necessary to extract and make them available to other systems
+[1]. Thus, temporal information extraction has been a topic of interest in recent
+years [3]. It is important to text processing tasks [16] such as question answering,
+search, text classiﬁcation, text summarization among others [22,23,25,33].
+One of the basic units for this process is the temporal expression (TE), which
+examples in Portuguese are: “06 de abril de 2018 ”, “ontem”, “p´
+os-operat´
+orio”,
+“manh˜
+a da cirurgia” and “25/03/2018 ”. The whole process of temporal information extraction has three steps: temporal tagging, event tagging and temporal
+relation [29,35]. This work covers only the temporal tagging step [21]. In this
+step, a TE has to be extracted and normalized to a standard format which allows
+the TE to be used as an input of a question answering system, a chatbot, or a
+summarization system, for instance.
+c Springer Nature Switzerland AG 2018
+A. Villavicencio et al. (Eds.): PROPOR 2018, LNAI 11122, pp. 231–241, 2018.
+https://doi.org/10.1007/978-3-319-99722-3_24
+
+232
+
+R. F. de Azevedo et al.
+
+Clinical texts are rich of temporal information. Applying temporal tagging
+over this texts is the ﬁrst step to cope with more complex and useful processes
+such as the creation of the patient timeline and summarizing reports of a long
+time chronic patient. Due to pressure conditions in the workplace of health
+professionals, clinical texts are often not correctly written, containing typing
+errors, non-standard abbreviations etc. Considering the research of temporal
+tagging, most of them are done over annotated (labeled) news texts correctly
+written in English for NLP competitions like TempEval [34] and TempEval-2
+[36]. Examples of clinical texts used in NLP competitions are the i2b2 2012
+corpus [30] and the Clinical Tempeval corpus [2], but both are also well-formed
+and labeled (annotated) texts in English.
+The main contribution of this paper is to present a method to extract and
+normalize TEs from noisy (raw) clinical texts written in Brazilian Portuguese. To
+accomplish this goal, the temporal tagger HeidelTime was used to make temporal
+tagging of correct and incorrect written TEs (we say noisy TEs). In this research,
+noisy TEs mean the ones with typing errors, spelling errors or unstandardized
+abbreviations (e.g. “36 sem” which is found in clinical texts meaning “thirty
+six weeks of pregnancy”). The correct form in Brazilian Portuguese would be
+“36 semanas”. To cope with the noisy TEs, a n-gram strategy was used in
+the unlabelled data available. The method reached a F1 score of 88.92% for
+the extraction step and a F1 score of 87.89% for the normalization step. The
+obtained results are similar to the literature [9,10,17].
+The rest of the paper is organized as follows. Section 2 presents the basic
+concepts present in the paper. Section 3 is about the related works. Section 4
+presents the proposed method. Section 5 comments the experiments and results.
+Finally, Sect. 6 presents the conclusions and future work.
+
+2
+
+Basic Concepts
+
+This section presents important concepts for this work, the ﬁrst one is tagging.
+It is a process applied in text to mark events, verbs, time, names, places and
+other entities for many purposes [20,29]. Temporal tagging can be considered as
+a particular type of Named Entity Recognition (NER). It can be divided in two
+steps, extraction and normalization. In the extraction step TEs such as “15-122013 ” and “ontem” (yesterday) are extracted from text. In the normalization
+step, they are changed to a standard format as “2013-12-15” and “2013-12-14”
+[29]. In this work, four types of TEs were considered. They were deﬁned by the
+TimeML standard, speciﬁcally, to its TIMEX3 tag [14,18,19,24]. They are:
+– Date: refers to a point in time equal or greater than day, like in “2 de novembro
+de 2017 ” (November 2, 2017) or “2017”.
+– Time: refers to a point in time smaller than day, for example, parts of the
+day like “quinta-feira de manh˜
+a ” (Thursday morning).
+– Duration: deals with the length of an interval, which can be of diﬀerent granularities like “5 horas” (5 h), “3 anos” (3 years) etc. A duration can also
+specify the point in time where an interval starts and ends.
+
+Temporal Tagging of Noisy Clinical Texts in Brazilian Portuguese
+
+233
+
+– Set: serves to describe a set of times, dates, or frequency within a time interval
+that an event occurs. For example: “todo s´
+abado” (every Saturday).
+As one TE can be made of more than one word, it is important to distinguish
+between strict and relaxed matching, both concepts are related to the tagger
+evaluation. In a strict matching approach, when the TE “quarta-feira a
+´ tarde”
+(Wednesday afternoon) exists in the gold standard (test set), it is counted as correct for metric purposes, only if the temporal tagging system recognizes the TE
+written in the exact way it is in the gold standard. However, in a relaxed matching approach, if the system ﬁnds only the word “quarta-feira” in the analyzed
+text, it will be counted as a correct match with the gold standard. According
+to Str¨
+otgen and Gertz [29], the relaxed matching with correct normalization is
+usually considered as the most important evaluation measure. The results of this
+work are evaluated using a relaxed matching approach, considering the correct
+extraction and normalization steps. The next paragraph presents the temporal
+tagger used in this research.
+HeidelTime1 is a rule-based, multilingual, domain-sensitive temporal tagger
+developed at Heidelberg University, in Germany. It was designed to extract TEs
+from documents and normalize them according to the TimeML TIMEX3 annotation standard [14,18,19,24]. HeidelTime was chosen for this research because
+of its separation between the algorithmic part and the language resources part.
+The tagger contains manually created resources for 13 languages, Portuguese is
+one of them. For this speciﬁc language, HeidelTime original version only contains
+resources for the news domain [6,28]. Figure 1 shows these resources.
+Figure 2 exempliﬁes HeidelTime extraction and normalization mechanism.
+Part (I) shows raw TEs. Part (II) shows the rule (regular expression) triggered in the tagger. Part (III) presents TEs normalized and ready to be used by
+another system. The element in bold “reUnitAbbrev” (II) is an extraction pattern resource (ﬁle) that contains abbreviations. The “sem” and “sems” abbrevia-
+
+Fig. 1. Pattern resource ﬁles for diﬀerent expressions for month names and numbers
+(a) and normalization resource ﬁle for month expressions (b), (c) represents how their
+information is used in HeidelTime after being read and translated by HeidelTime’s
+resource interpreter. Adapted from [27].
+1
+
+https://github.com/HeidelTime/heideltime.
+
+234
+
+R. F. de Azevedo et al.
+
+Fig. 2. HeidelTime rule functioning example
+
+tions (week and weeks respectively) in (I) were found in this resource “reUnitAbbrev”. The underlined element in (II) is a normalization resource (ﬁle).
+The next section presents papers related to this research.
+
+3
+
+Related Works
+
+According to Kreimeyer and colleagues [11], the majority of NLP systems for
+capturing and standardizing unstructured clinical information use the rule-based
+approach (58.92%). The hybrid approach represents 33.92% and 7.16% of the
+systems use the machine learning approach. The hybrid approach is the combination of the other two. The main approach for the temporal tagging task is
+also the rule-based one.
+Clinical texts usually have peculiar terms, abbreviations and wrong spelling,
+what turns the classiﬁcation task harder when compared to the news texts (the
+commonest ﬁeld studied in the temporal tagging task). In this case, a rulebased approach presents a more trustworthy result when temporal tagging is
+the scope. This understanding is presented by Chang and Manning [4], when its
+SUTime system is presented. It is a deterministic rule-based system for temporal
+tagging recognition of news-style text written in English, the system is part of
+the Stanford CoreNLP project. Lee and colleagues [12] present another rulebased strategy, the UWTime system. It is a context-dependent semantic parsing
+approach to extract and normalize TEs of the news domain written in English.
+The current state-of-the-art system for temporal tagging is HeidelTime [27].
+It is a rule-based system that was made to deal with multilingual and multidomain text [28]. HeidelTime was developed to extract and normalize TEs from
+four domains: news, narrative, colloquial (short text) and scientiﬁc. It has been
+already extended to cope with the news domain in languages such as Spanish
+[7], Chinese [13] and Italian [15]. It was also extended to the narrative domain
+in Croatian [26]. Another extension of HeidelTime was presented by Hamon and
+Grabar [10], which is able to work with clinical narratives in English and French.
+This last work reached a F1 score of 94.31 for the extraction and normalization
+tasks in French.
+Gupta and colleagues [9] presented an example of machine learning strategy
+to extract TEs using an artiﬁcial neural network. In their system, the classiﬁcation output labels indicate if the type of the TEs is time, date, duration
+
+Temporal Tagging of Noisy Clinical Texts in Brazilian Portuguese
+
+235
+
+or frequency. The network is built to check where is the beginning, the middle
+(inside) and the end (outside) of each word classiﬁed as one of the four TE types.
+To train and test the classiﬁer, news and clinical corpora written in English were
+combined. The F1 score got by their work was 84.08 in the extraction task.
+The currently most used classiﬁer in the temporal information extraction
+and/or normalization has been the Conditional Random Fields (CRF), especially
+because it uses a statistical approach that takes the correlation between words
+(tokens) into account. One example of its use is the work of Moharasar and
+Ho [17], who proposed a hybrid system which uses the CRF classiﬁer. In their
+strategy, HeidelTime extracts TEs from clinical texts in English. Along with
+the HeidelTime extracted TEs, the authors generated lexical features to train a
+linear chain CRF. The F1 score reached by their work was 79.95 in the extraction
+task.
+An example of extraction and normalization of TEs written in Portuguese is
+the research done by Costa and Branco [5]. Their work uses a hybrid approach,
+which combines the use of a classiﬁer to predict each word of a text in three labels:
+B (begin), I (inside) and O (outside). The classiﬁcation is combined with other
+features which are: current token, previous token and following token, position
+of a white space before the current token and the previous token, document
+creation time etc. The data used by their work is the translation to Portuguese
+of the TempEval-2 challenge data originally written in English [36]. Their work
+neither deal with noisy TEs nor with clinical data. The results of their method
+are not calculated using F1 score.
+
+4
+
+Extracting and Normalizing Temporal Expressions
+
+In this section we present our method to extract and normalize TEs in clinical
+texts written in Brazilian Portuguese. Clinical texts are as noisy as the routine
+of the health professionals who write them. Examples of noisy TEs found in
+clinical texts are: (1) “Revebe alta” - the correct spelling is “Recebe alta” (receives
+discharge), (2) Diﬀerent ways to present an hour and minute - “05 h e 30 min”,
+“15:07” and “4h10 ”. Thus, they need to pass through a preprocessing step.
+In the preprocessing step, data is cleaned and prepared. In this step, training
+and test sets are changed to lowercase, while some typing errors are corrected.
+The correction is done in two steps: identiﬁcation of errors and correction of
+all occurrences of the identiﬁed patterns (errors). Examples of the preprocessing are: “ago/06 )” which was corrected to “ago/06)”; “#retorno a” that was
+corrected to “# retorno a”; “3 dia(s)” which was corrected to “3 dia (s)” and
+“100 MAC
+¸ OS.ANO” that was corrected to “100 ma¸cos.ano”. These corrections
+are necessary once HeidelTime does not ﬁnd a TE like “3 dia(s)” (because there
+is no white-space between the letter “a” and the left parenthesis). Each clinical
+text was turned into a single sentence because some TEs with two or more words
+were separated in two paragraphs, one word at the end and the other word at
+the beginning of diﬀerent paragraphs (a line break problem).
+The processing step starts by manually transforming each TE of the training
+set into a new rule and/or a new (pattern and/or normalization) resource in
+
+236
+
+R. F. de Azevedo et al.
+
+HeidelTime. It is important to highlight that, we only modiﬁed the language
+resources (Portuguese) part of HeidelTime, the algorithmic part (Java code)
+was not changed. The processing step was done in three diﬀerent incremental
+approaches, what supposedly makes the last approach better than the others. In
+all of them, the already existing resources in HeidelTime for Portuguese were kept
+and, if possible, appended with TE from the clinical texts. Figure 3 illustrates
+the process and also shows the main contributions of this paper, which are
+represented by parts (b) and (d) of the same ﬁgure. Bold words in (a) and (c)
+present diﬀerent ways to add TEs in HeidelTime. Item (a) is a pattern resource
+(ﬁle) called “reDateWord” (italic). This resource already existed in the original
+HeidelTime (code taken from github (see footnote 1)). The pattern resource (ﬁle)
+“reFutureRefDate” (c) did not exist in the original HeidelTime, but was created
+by us. All bold parts of TEs in (c) came from the training set.
+
+Fig. 3. Method processing step
+
+Thus, the ﬁrst approach called “Correct TEs” is the addition of TEs correctly written from the training set (in bold) in resources that already existed
+in HeidelTime (a) or were added to it (c). In the second approach called “Noisy
+TEs”, the previous approach was kept, but noisy TEs found in the training set
+were also added to HeidelTime. It is represented by item (b), which was added
+to item (a), however, it could also have been added to a new ﬁle created by us.
+In the third approach called “N-gram Noisy”, the second approach is
+appended with the n-gram process. It is done by dividing in the middle each
+correctly written word of a TE with length greater than ﬁve characters (we used
+a changeable “n” which is equal to or greater than three characters), and each
+half (n-gram) was searched for in 870 clinical texts not used in the training and
+test sets. The aim of this approach is, to ﬁnd misspelled words of TEs, in order to
+add the found patterns in the HeidelTime rules. The “N-gram Noisy” approach
+is represented in items (c) and (d). Item (d) illustrates the n-gram strategy,
+thus, the TE part “persistir ” has a characters length equal to nine. The word
+
+Temporal Tagging of Noisy Clinical Texts in Brazilian Portuguese
+
+237
+
+was splitted in two parts “pers” and “istir ”. Afterwards, each part of the word
+(n-gram) was searched for in all 870 clinical texts. In item (d), the misspelled
+TE “pwerdsistir ” represents a ﬁnding result of this process. Finally, the noisy
+TE is added to the item (c). This process was done for each correctly written
+word of TEs present in the pattern resource ﬁles of the “Correct TEs” approach.
+The “N-gram Noisy” approach is a type of string similarity strategy used to recognize misspelled words. It was adopted in this paper as an alternative way to
+cope with the noisy TEs in clinical texts written in Brazilian Portuguese, once
+a similar approach was already done based on the Edit Distance algorithm [32],
+a well-known algorithm for this purpose.
+Items (e) and (f) are examples of rules. Item (e) is one example of
+rules created by us, its pattern resource “reFutureRefDate” is part of the
+extraction section of the rule, which also has another pattern resource called
+“reMedicalEvents” and is normalized with the imprecise and relative reference
+“FUTURE REF”. Item (f) already existed in the original HeidelTime, but had
+its pattern resource “reDateWord” appended with TEs from clinical texts.
+The next section presents the experiments and results.
+
+5
+
+Experiments and Results
+
+In this research we used 1,000 hospital discharge summaries from a Brazilian
+hospital produced between the years 2002 and 2007. Its use was approved by the
+Research Ethics Committee of PUCPR. From the total, 100 texts were used for
+training and 30 texts were used for testing. The hold-out method was applied.
+The other 870 texts were used with the n-gram approach already mentioned.
+The training set and the test set were annotated by two annotators. A nurse
+assistant and a computer science master degree student. They marked TEs
+with TimeML TIMEX3 tags and normalized them with the TIMEX3 type and
+value attributes [18,24]. The annotators based their work on TimeML guidelines
+[8,18,24] and marked the TEs as noisy or correctly written. Their Kappa interannotator agreement coeﬃcient was 75.2, which is a signiﬁcant one considering
+the clinical domain challenges [31]. To evaluate the method, four experiments
+were done. They were evaluated with the precision, recall and F1 score metrics.
+They were tested with the same 30 clinical texts. All experiments used HeidelTime with a setup to the news domain. It was done to take advantage of the rules
+for Portuguese that already existed in the tagger and, because the discharge day
+date of all clinical texts was available (a prerequisite to use the news domain)
+[6,28].
+The ﬁrst experiment used HeidelTime with no changed rules or resources over
+the test set (code taken from github (see footnote 1)). In the second experiment
+we selected TEs correctly written from the training set and added them to HeidelTime, the “Correct TEs” approach. These TEs were added to already existing
+resources and rules, or added to new resources or rules designed speciﬁcally for
+the clinical texts written in Brazilian Portuguese.
+In the third experiment, the previous setup was kept (experiments one and
+two). However, we selected also the noisy TEs of the training set and added
+
+238
+
+R. F. de Azevedo et al.
+
+them to resources or rules, the “Noisy TEs” approach described in Sect. 4. In
+the fourth experiment (N-gram Noisy approach), HeidelTime was kept with the
+third experiment setup, but rules and resources received also noisy TEs found in
+the process done with the n-gram strategy, described in Sect. 4. Table 1 presents
+the results of each experiment of the temporal tagging task.
+Table 1. Experiments results
+Step
+
+Metric
+
+Experiments
+Original (1) Correct (2) Noisy (3) N-Gram (4)
+
+Extraction
+
+Precision 79.78
+Recall
+17.27
+F1 score 28.40
+
+Normalization Precision 77.53
+Recall
+16.79
+F1 score 27.60
+
+95.58
+68.37
+79.72
+
+93.18
+76.40
+83.96
+
+94.52
+83.94
+88.92
+
+91.50
+65.45
+76.31
+
+92.58
+75.91
+83.42
+
+93.42
+82.97
+87.89
+
+The fourth experiment had the best results, except by the precision of the
+second experiment. It incremented resources from the three previous experiments, plus the n-gram strategy. An interesting behavior was observed in the
+experiments, it is the increase of the recall between experiments 2 and 3. It
+happened because the patterns added to HeidelTime based on the noisy TEs,
+improved the ability of the tagger to make its work, which is identify, extract
+and normalize TEs. However, as results between the experiments two, three and
+four are similar, statistical relevance tests were done. Nevertheless, the results of
+the experiment one (original HeidelTime) were kept out of this statistical tests,
+because its results were far smaller than the others.
+All experiments were done under the same conditions (paired samples), however, the Shapiro-Wilk test revealed that the distribution of the test set samples
+was not normal. Thus, a non-parametric test was applied. As there were more
+than two experiments to test, the Friedman test was chosen to check if there
+was a relevant statistical diﬀerence between the results of the three experiments.
+The pair comparison is done in a Dunn-Bonferroni post-hoc test showed that
+there was a relevant diﬀerence only between the second experiment and the
+fourth experiment. In order to test each of the three experiments by pairs, the
+Wilcoxon test was also performed and, the result was the same. In both cases, a
+conﬁdence of 0.95 and a signiﬁcance of 0.05 was used. The same statistical tests
+were done to the extraction and normalization steps and, the results were the
+same for both.
+Referring to the normalization type of all TEs of the corpus (training and
+test), 43.98% were “date”, 21.58% were “duration”, 20.49% were “time” and
+13.93% were “set” (frequency). Yet, 28.14% were normalized as imprecise [32]
+TEs. Among the imprecise ones, 91.15% were PAST REF and only 8.84% were
+
+Temporal Tagging of Noisy Clinical Texts in Brazilian Portuguese
+
+239
+
+FUTURE REF. It happened because discharge summaries refer more about
+what happened to the patient up to the discharge day (past and present) and
+rarely refer to things that will happen after the discharge day (future).
+The amount of 28 noisy TEs were found by the n-gram strategy. Examples of
+them are presented in their noisy version and correct version respectively: “aanterior ” (anterior ), “seginte” (seguinte), “rcebe” (recebe), “acompanham,ento”
+(acompanhamento), “hist´
+ori ” (hist´
+oria) and “p´
+o-infarto” (p´
+os-infarto). Only
+correctly written words of TEs served as input of the n-gram strategy, thus, there
+are probably more noisy TEs in the 870 clinical texts not identiﬁed. Examples
+of noisy TEs missed by HeidelTime in the test set are: “2m” (2 meses), “1a5m”
+(1 ano e 5 meses) e “p´
+os-op” (p´
+os-operat´
+orio). They were missed because they
+did not exist in the training set and thus, were not added to HeidelTime.
+The TE “02/07” is an example of a problematic one. According to the gold
+standard it was the second day of July, however, HeidelTime understood it as
+February/2007, it highlights a regular expressions limitation, because they do
+not consider the surrounding words of a TE, what could be decisive in this case.
+Finally, about the annotation process, from a total of 1586 TEs annotated in
+the training and test sets, 7.69% were considered noisy by the annotators.
+
+6
+
+Conclusions
+
+The focus of this work is to extract and normalize TEs from correct and incorrect clinical texts written in Brazilian Portuguese. The tagger we used showed
+that the n-gram strategy reached a statistical relevant improvement when compared to the tagging of only correctly written TEs in the clinical domain. The
+experiment results showed that our best result is similar to other works done in
+other languages, especially within the clinical domain [9,10,17], considering that
+none of them cope with noisy TEs in their extraction and normalization steps.
+As future work, a combination of HeidelTime with a machine learning approach might improve the quality of the temporal tagging of correctly written
+and noisy TEs. For this, we intent to combine HeidelTime with classiﬁers such
+as SVM, CRF, Random Forest or Deep Learning.
+
+References
+1. Alonso, O., Str¨
+otgen, J., Baeza-Yates, R.A., Gertz, M.: Temporal information
+retrieval: challenges and opportunities. In: TWAW, vol. 11, pp. 1–8 (2011)
+2. Bethard, S., Derczynski, L., Savova, G., Pustejovsky, J., Verhagen, M.: SemEval2015 task 6: clinical TempEval. In: SemEval@NAACL-HLT, pp. 806–814 (2015)
+3. Campos, R., Dias, G., Jorge, A.M., Jatowt, A.: Survey of temporal information
+retrieval and related applications. ACM Comput. Surv. (CSUR) 47(2), 15 (2015)
+4. Chang, A.X., Manning, C.D.: SUTime: a library for recognizing and normalizing
+time expressions. In: LREC, vol. 2012, pp. 3735–3740 (2012)
+
+240
+
+R. F. de Azevedo et al.
+
+5. Costa, F., Branco, A.: Extracting temporal information from portuguese texts.
+In: Caseli, H., Villavicencio, A., Teixeira, A., Perdig˜
+ao, F. (eds.) PROPOR 2012.
+LNCS, vol. 7243, pp. 99–105. Springer, Heidelberg (2012). https://doi.org/10.1007/
+978-3-642-28885-2 11
+6. Costa, F., Branco, A.: TimeBankPT: a TimeML annotated corpus of Portuguese.
+In: LREC, pp. 3727–3734 (2012)
+7. Gertz, M., Str¨
+otgen, J., Zell, J.: HeidelTime: tuning English and developing Spanish
+resources for TempEval-3, Atlanta, Georgia, USA, p. 15 (2013)
+8. TimeML Working Group, et al.: Guidelines for temporal expression annotation for
+English for TempEval 2010 (2009)
+9. Gupta, N., Joshi, A., Bhattacharyya, P.: A temporal expression recognition system
+for medical documents by taking help of news domain corpora. In: 12th International Conference on Natural Language Processing, ICON (2015)
+10. Hamon, T., Grabar, N.: Tuning HeidelTime for identifying time expressions in
+clinical texts in English and French. In: EACL 2014, pp. 101–105 (2014)
+11. Kreimeyer, K., et al.: Natural language processing systems for capturing and
+standardizing unstructured clinical information: a systematic review. J. Biomed.
+Inform. 73, 14–29 (2017)
+12. Lee, K., Artzi, Y., Dodge, J., Zettlemoyer, L.: Context-dependent semantic parsing
+for time expressions. In: ACL, vol. 1, pp. 1437–1447 (2014)
+13. Li, H., Str¨
+otgen, J., Zell, J., Gertz, M.: Chinese temporal tagging with HeidelTime.
+In: EACL, vol. 2014, pp. 133–137 (2014)
+14. Madkour, M., Benhaddou, D., Tao, C.: Temporal data representation, normalization, extraction, and reasoning: a review from clinical domain. Comput. Methods
+Progr. Biomed. 128, 52–68 (2016)
+15. Manfredi, G., Str¨
+otgen, J., Zell, J., Gertz, M.: HeidelTime at EVENTI: tuning
+Italian resources and addressing TimeML’s empty tags. In: Proceedings of the
+Forth International Workshop EVALITA, pp. 39–43 (2014)
+16. Meng, Y., Rumshisky, A., Romanov, A.: Temporal information extraction for question answering using syntactic dependencies in an LSTM-based architecture. arXiv
+preprint arXiv:1703.05851 (2017)
+17. Moharasar, G., Ho, T.B.: A semi-supervised approach for temporal information
+extraction from clinical text. In: 2016 IEEE RIVF International Conference on
+Computing & Communication Technologies, Research, Innovation, and Vision for
+the Future, RIVF, pp. 7–12. IEEE (2016)
+18. Pustejovsky, J., et al.: TimeML: robust speciﬁcation of event and temporal expressions in text. New Dir. Quest. Answ. 3, 28–34 (2003)
+19. Pustejovsky, J., Knippen, R., Littman, J., Saur´ı, R.: Temporal and event information in natural language text. Lang. Resour. Eval. 39(2), 123–164 (2005)
+20. Quaresma, P., Mendes, A., Hendrickx, I., Gon¸calves, T.: Tagging and labelling
+Portuguese modal verbs. In: Baptista, J., Mamede, N., Candeias, S., Paraboni, I.,
+Pardo, T.A.S., Volpe Nunes, M.G. (eds.) PROPOR 2014. LNCS, vol. 8775, pp.
+70–81. Springer, Cham (2014). https://doi.org/10.1007/978-3-319-09761-9 7
+21. Roberts, K., Rink, B., Harabagiu, S.M.: A ﬂexible framework for recognizing
+events, temporal expressions, and temporal relations in clinical text. J. Am. Med.
+Inform. Assoc. 20(5), 867–875 (2013)
+22. Rodrigues, R., Gomes, P.: Improving question-answering for portuguese using
+triples extracted from corpora. In: Silva, J., Ribeiro, R., Quaresma, P., Adami,
+A., Branco, A. (eds.) PROPOR 2016. LNCS, vol. 9727, pp. 25–37. Springer, Cham
+(2016). https://doi.org/10.1007/978-3-319-41552-9 3
+
+

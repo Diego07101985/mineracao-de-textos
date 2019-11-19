@@ -1,0 +1,552 @@
+Entity Linking with Distributional Semantics
+Pablo Gamallo1(B) and Marcos Garcia2
+1
+
+Centro Singular de Investigaci´
+on en Tecnolox´ıas da Informaci´
+on (CiTIUS),
+Universidade de Santiago de Compostela, Galiza, Spain
+pablo.gamallo@usc.es
+2
+Grupo LyS, Dep. de Galego-Portuguˆes, Francˆes e Lingu´ıstica,
+Universidade da Coru˜
+na, Galiza, Spain
+marcos.garcia.gonzalez@udc.gal
+
+Abstract. Entity Linking (EL) consists in linking name mentions in a
+given text with their referring entities in external knowledge bases such
+as DBpedia/Wikipedia. In this paper, we propose an EL approach whose
+main contribution is to make use of a knowledge base built by means of
+distributional similarity. More precisely, Wikipedia is transformed into a
+manageable database structured with similarity relations between entities. Our EL method is focused on a speciﬁc task, namely semantic annotation of documents by extracting those relevant terms that are linked to
+nodes in DBpedia/Wikipedia. The method is currently working for four
+languages. The Portuguese and English versions have been evaluated and
+compared against other EL systems, showing competitive range, close to
+the best systems.
+Keywords: Entity linking
+
+1
+
+· Semantic annotation · Term extraction
+
+Introduction
+
+Entity Linking (EL) puts in relation mentions of entities within a text with
+their corresponding entities or concepts in an external knowledge resource. Typically, entity mentions are proper names and domain speciﬁc terms which can be
+linked to Wikipedia pages. Most EL methods include three basic subtasks: (i)
+extraction of the terms likely to be entity mentions in the input text, by using
+Natural Language Processing (NLP) techniques such as tokenization and multiword extraction; (ii) selection of the entity candidates: each mention is associated
+to a set of entities in the external resource; and (iii) selection of the best entity
+candidate for each mention by making use of disambiguation strategies.
+In most cases, two types of approaches are suggested for the selection or
+disambiguation subtask:
+1. Non-collective approaches, which resolve one entity mention at each time on
+the basis of local and contextual features. These approaches generally rely on
+supervised machine learning models [11,14,23,24].
+This research has been partially funded by the Spanish Ministry of Economy and
+Competitiveness through project FFI2014-51978-C2-1-R.
+c Springer International Publishing Switzerland 2016
+J. Silva et al. (Eds.): PROPOR 2016, LNAI 9727, pp. 177–188, 2016.
+DOI: 10.1007/978-3-319-41552-9 18
+
+178
+
+P. Gamallo and M. Garcia
+
+2. Collective approaches, which semantically associate a set of relevant mentions
+by making use of the conceptual density between entities through graph-based
+approaches [1,2,6,7,12,14,15,17,18,20,21,25,26].
+Many applications can beneﬁt from the EL systems, namely educational applications. Text annotated with EL allows students to have fast access to additional encyclopedic knowledge relevant to the study material, by linking proper
+names and terms to the corresponding pages in Wikipedia or other external
+encyclopedic sources. In the research community oriented to educational applications, EL is better known as the task of semantic annotation [28]. Given a
+source text, the semantic annotation task is generally restricted to those mentions in the text referring to the same conceptual category. In fact, the main
+goal of semantic annotation is to semantically categorize a text by identifying
+the main concepts or subconcepts the text content is about. As a result, only
+those mentions that are semantically related are annotated in the text with links
+(e.g., DBpedia URIs) to their corresponding entities/concepts in an external
+knowledge database. In [22], the authors describe the DBpedia Spotlight system,
+which can be conﬁgured to detect topic pertinence. In order to constrain annotations to topically related entities, a higher threshold for the topic pertinence can
+be set. This way, texts can be annotated by DBpedia Spotlight using semantically
+related entities.
+In this article, we will describe an EL system for the task of semantic annotation. For this speciﬁc task, the collective approach, which identiﬁes those mentions associated to conceptually related entities, seems to be the most appropriate
+strategy.
+The main drawback of collective approaches is the fact that the conceptual
+graph generated is too large and very diﬃcult to explore in an eﬃcient and
+scalable way. The graph can grow dramatically as the set of entities associated
+to the diﬀerent mentions in the text is expanded by making use of diﬀerent types
+of semantic relations, including the hierarchical ones (hyperonymy).
+To minimize this problem, a collective method is proposed and implemented.
+Our EL method relies on a distributional similarity strategy to select a restricted
+set of conceptual relations/arcs between entities. In particular, it only selects
+relations between the most similar entities. Distributional similarity was computed using Wikipedia articles, as in [8]. The conceptual relations between entities that are not similar in distributional terms are removed from the graph. So,
+the conceptual graph used to search for the entity candidates is dramatically
+simpliﬁed and, then, can be explored in a more eﬃcient way.
+The remainder of the article is organized as follows. In the next section
+(Sect. 2), we describe the method: It starts by sketching a brief overview of
+the proposed strategy. Subsect. 2.2 describes how we build an entity database
+computing distributional similarity. Next, Subsect. 2.3 is focused on the NLP
+approaches to term extraction. In Subsect. 2.4, the entity linking strategy is
+described. Then, we evaluate and compare our method in Sect. 3 and, ﬁnally,
+some conclusions are addressed in Sect. 4.
+
+Entity Linking with Distributional Semantics
+
+2
+2.1
+
+179
+
+The Method
+Overview
+
+Our EL method consists of three modules:
+Distributional Similarity: This module builds the main encyclopedic resource
+used by the Entity Linking module. Each Wikipedia entity is put in relation
+with its most similar entities in terms of distributional similarity. This is the
+main contribution of our work, since, to our knowledge no EL method relies
+on such a sort of resource. This is described in Sect. 2.2.
+Term Extraction: This module makes use of NLP strategies to extract the
+most relevant terms from the text. It is described in Sect. 2.3.
+Entity Linking: This is the core of the system. It makes use of Wikipedia-based
+resources (such as that built by distributional similarity) and of the terms
+previously extracted from the text. It consists of two tasks. First, it identiﬁes
+those relevant terms that are linked to Wikipedia entities and, then, it selects,
+for each term, the best entity candidate by making use of a disambiguation
+strategy. This module is described in Sect. 2.4.
+2.2
+
+Distributional Similarity
+
+We use a distributional similarity strategy to select only semantic relations
+between very similar entities. This strategy allows us to dramatically simplify
+the number of relations/arcs to be explored in a collective approach.
+Let us see an example. In the English DBpedia, the entity An´ıbal Cavaco Silva
+(President of Portugal between 2006–2016) is directly related to 17 categories
+by means of the hyperonymy relationship: for instance, Living People, Prime
+Ministers of Portugal, People from Loul´e Municipality, etc. If we explore these
+17 categories going down to obtain their direct child (or hyponyms), the results
+are 619, 406 new entities, which are in fact co-hyponyms of Cavaco Silva. Most
+of these co-hyponyms have a very vague conceptual relation (e.g. being a living
+person) with the target entity. In order to remove vague conceptual relations, we
+only select those entities that can be somehow considered as similar to Cavaco
+Silva. Similarity between two entities is computed by taking into account both
+the internal links appearing in the Wikipedia articles of the two entities, and
+the set of categories directly classifying them. More precisely, two entities are
+considered to be similar if they share at least one direct category and a signiﬁcant
+amount of internal links.
+In our experiments, the target entity Cavaco Silva is associated with its most
+similar entities (ﬁrst column in Table 1), and for each similar entity we also select
+the most frequent internal links with which they co-occur (second column of the
+table). The entities in the second column represent the conceptual context with
+regard to which two entities are similar. As a result, we obtain a very restricted
+and very similar set of entities related to Cavaco Silva, which includes other
+Presidents and Primer Ministers of Portugal. Notice that the target entity is
+
+180
+
+P. Gamallo and M. Garcia
+
+also similar to former Finance Ministers (Ferreira Leite and V´ıtor Gaspar ), since
+Cavaco Silva also had that political function before becoming Prime Minister.
+In addition, he shares with these two individual the fact of being Economist and
+having been working at the same universities.
+In our experiments, both similar and contextual entities are all considered
+in the same way: all are directly related to the target entity. As the list of cohyponyms for each entity is reduced from some hundred thousands candidates
+to a few entities (similar and contextual ones), the resulting database is easy to
+explore by most searching strategies.
+Table 1. Entities related to An´ıbal Cavaco Silva using distributional similarity
+Similar entities
+M´
+ario Soares
+
+Contextual entities
+President of Portugal, Ordem Nacional do Cruzeiro do Sul
+Ordem do Libertador
+
+Jorge Sampaio
+
+Ant´
+onio Guterres, Timor-Leste Portuguese Presidential Election
+Ordem de Am´ıcar Cabral
+
+Diego Freitas do Amaral Prime Minister of Portugal, New University of Lisbon
+Catholic University of Portugal
+Manuela Ferreira Leite
+
+National Assembly of the Republic, Economist, Bank of Portugal
+Funda¸c˜
+ao Calouste Gulbenkian
+
+V´ıtor Gaspar
+
+Economist, Francico Lou¸c˜
+a, Bank of Portugal, Professor
+
+Let e1 and e2 be two entities with the corresponding articles in Wikipedia.
+They are comparable if they share at least one Wikipedia category. Distributional
+similarity is only computed on entity pairs sharing at least one category. So, if
+entities e1 and e2 share at least one category, they are actually comparable and
+similarity is computed. Distributional similarity is computed using the following
+version of the Dice coeﬃcient [3]:
+Dice(e1 , e2 ) =
+
+2∗
+
+i
+
+min(f (e1 , linki ), f (e2 , linki ))
+f (e1 ) + f (e2 )
+
+(1)
+
+where f (e1 , linki ) represents the number of times the entity e1 co-occurs with
+the internal link linki . Internal links stand for the distributional contexts of the
+compared entities. As a result, each entity is assigned a set of similar entities
+ranked by Dice similarity and a set of internal links ranked by frequency. The
+resulting entity database is the main knowledge base considered by our semantic
+annotation strategy. This resource is called Similarity Knowledge Base. In [9],
+Dice turned out to be one of the most reliable similarity measures for distributional semantics.
+2.3
+
+NLP Techniques for Term Extraction
+
+We distinguish two diﬀerent types of terms: basic terms and multiword expressions. Basic terms are lexical units codiﬁed as common nouns, adjectives, verbs,
+
+Entity Linking with Distributional Semantics
+
+181
+
+or proper names which are considered as relevant for a given text. Except
+proper names, which can be composite expressions (e.g., New York, University
+of South California), basic terms are just single words. Multiwords are relevant expressions codiﬁed as compounds that instantiate speciﬁc patterns of PoS
+tags. For instance, discussion forums, natural language, cells of plants
+or professor at New University of Lisbon can be multiwords within a text.
+For the speciﬁc task of semantic annotation, we assume that not all terms
+within a text which are linked to an entity (or concept) in DBpedia are semantically relevant. There are frequent mentions, e.g. concept, term, red, etc., which
+are linked to concepts in DBpedia, but which may not be relevant in some texts.
+So, terms must be ranked according to their relevance in a text and should be
+considered as entity candidates only the most relevant ones.
+Our approach to extract basic terms and multiwords requires PoS tagging,
+which is performed with the multilingual NLP suite CitiusTool [10].1 For extracting basic terms, we use a diﬀerent strategy that the one used for multiword
+extraction. The strategy we follow to extract basic terms is slightly diﬀerent
+from that used for multiwords. In the case of basic terms, their extraction relies
+on the notion of termhood, that is, the degree that a linguistic unit is related to
+domain-speciﬁc concepts [19]. In the case of multiwords, the extraction is based
+on the notion of unithood, which concerns with whether or not sequences of words
+should be combined to form more stable lexical units. More formally, unithood
+refers to “the degree of strength or stability of syntagmatic combinations and
+collocations” [19]. The concept of unithood is only relevant to complex units
+(multiwords).
+Extraction of Basic Terms. The ﬁrst step consists in identifying and selecting
+common nouns, adjectives, verbs, and proper names from a given text. Proper
+names are selected by using named entity recognition. The result is a list of term
+candidates.
+The second step consists in providing the term candidates with a statistical
+weight, representing the conceptual relevance of the term within the input text.
+The weight of a term is computed by considering the frequency observed in the
+input text (observed data) with regard to its frequency in a large collection of
+texts taken as a corpus of reference (expected data). More precisely, the weight
+of a term is the chi-square value, which measures the divergence between the
+observed data and the values that would be expected. Expected values are provided by the reference corpus. Finally, all weighted terms are ranked according
+to their score and the N most relevant are selected for semantic annotation. This
+way, terms very frequent in the reference corpus (common concepts such as for
+instance person, thing, object, etc.) tend to be assigned low chi-square values. By contrast, very frequent terms in the input text but rare in the reference
+corpus have high values and, then, are considered as relevant for the given text.
+
+1
+
+Freely available at http://gramatica.usc.es/pln/tools/CitiusTools.html.
+
+182
+
+P. Gamallo and M. Garcia
+
+Multiword Extraction. The proposed strategy relies on the notion of unithood and has common aspects with similar work requiring linguistic patterns
+[27,29]. Our extraction of multiwords also consists of two steps: candidates selection and statistical ranking. In the ﬁrst step, candidates are extracted using a
+set of patterns of PoS tags. This is the set we use for our four languages:
+noun − adj
+noun − noun
+noun − prep − adj − noun
+adj − noun − prep − noun
+adj − noun − prep − noun − adj
+adj − noun − prep − adj − noun
+
+adj − noun
+noun − prep − noun
+noun − prep − noun − adj
+noun − adj − prep − noun
+noun − adj − prep − noun − adj
+noun − adj − prep − adj − noun
+
+In the second step, the candidates are ranked according to the notion of
+unithood: A lexical measure, chi-square, provides a test of association between
+the constituents of a multiword, in order to verify whether the constituents are
+or are not put together by random. More precisely, the observed values of a
+multiword stands for its frequency in the input text, while the expected values
+are derived from the single occurrences of its constituents in the same text.
+2.4
+
+The Entity Linking Strategy
+
+Resources and Terms. Our strategy makes use of three resources, which
+represent three diﬀerent linguistic relations:
+Similarity Knowledge Base (SIM). This stands for similarity relationships
+between Wikipedia entities. Wikipedia entities correspond to the titles of
+articles in Wikipedia (dump ﬁle of December 2014). This resource was built
+based on distributional similarity (see Sect. 2.2 above).2
+Categories of Wikipedia entities (HYPER). This database contains hierarchical (hyperonymy) relations between Wikipedia entities and their direct
+parent categories. This resource is provided by DBpedia3 .
+Redirects of Wikipedia entities (REDIR). This database contains synonymous relations between Wikipedia entities and their diﬀerent names. This
+resource is also provided by DBpedia.
+The union of Wikipedia entities and categories gives rise to the set of (conceptual) entities of our ontology. Indeed, some categories are not Wikipedia
+entities.
+Besides these three resources, our EL strategy also relies on term extraction
+(see Sect. 2.3). The output of this task, which is a ranked list of relevant terms
+(both single words and multiwords) is the input of the following EL tasks: searching for candidates and disambiguation. According to [13], the most eﬃcient EL
+systems divide the process of entity linking in these two tasks. During the search
+phase the system proposes a set of candidates for an entity mention to be linked
+to, which are then ranked by the disambiguator.
+2
+3
+
+This resource is available from the authors upon request.
+http://downloads.dbpedia.org/3.8/.
+
+Entity Linking with Distributional Semantics
+
+183
+
+Searching for Entity Candidates. We verify whether the relevant terms
+extracted from the input text are actually mentions of entities. For this purpose,
+they are expanded in two diﬀerent ways: (1) Each term is expanded with its
+lemma, for instance the term databases is expanded with the singular form
+database. (2) Terms are expanded with their synonymous stored in the resource
+REDIR. All the inﬂected forms and synonyms of a term occurring in the input
+text are joined in a single terminological unit. Then, we search for semantic
+links between expanded terms (terminological units) and entities. The search for
+links between terms and entities is performed using our external resources: SIM,
+REDIR, and HYPER. The main problem arising when terms are intended to be
+linked to entities is term ambiguity.
+One term (hereafter we use interchangeably “term” and “terminological
+unit”) can be associated to several entities, which represent their diﬀerent senses.
+A natural way of accessing the diﬀerent entities/senses of an ambiguous term
+is to use Wikipedia disambiguation pages. However, these pages include many
+odd senses which should not be linked to the ambiguous term. For instance,
+the French town Barcelonnette is considered as one of the senses of the term
+Barcelona, which is clearly odd. Instead of using the entities listed in the disambiguation pages, we select the entities/senses of an ambiguous term by taking
+into account some regular expressions related to the syntax of the Wikipedia
+titles. In Wikipedia, diﬀerent entities with the same name are individualized
+by making use of brackets, commas or hyphens. For instance, the ambiguous
+term Paris is associated to entities like Paris, Paris, Ohio, Paris, Arkansas,
+Paris (mythology), Paris (song), etc. All of them can be considered diﬀerent
+senses of the original term. Even if our use of regular expressions in Wikipedia
+titles does not always include all possible senses of an ambiguous term, most
+extracted senses are apparently correct ones. So, our technique is more precise
+than that based on disambiguation pages but has lower coverage.
+The output of this task is a list of entity candidates associated with all
+relevant terms extracted from the input text.
+Weighting Candidates and Entity Disambiguation. In this task, we select
+the best entity candidate of each term by making use of a disambiguation
+strategy. This strategy relies on selecting the entity with the highest weight
+for each term.
+Given a term, the process starts by assigning the same weight to all its
+entity candidates. Then, it explores the semantic relationships (similarity and
+hyperonymy) of each entity candidate and searches for related entities that are
+also semantically related to the candidates of the other terms in the input text.
+The procedure of exploring and searching common related entities is performed
+on the two knowledge resources: SIM (similarity) and HYPER (hyperonymy).
+The weighting process is just a summatory of semantically related entities
+that are shared by both the target entity and the rest of entity candidates of all
+input terms. Given a terminological unit t1 and an entity candidate e1 , the ﬁnal
+weight of this entity with regard to t1 is computed as follows:
+
+184
+
+P. Gamallo and M. Garcia
+k
+
+weight(t1 , e1 ) =
+
+sim(e1 , ei ) + hyper(e1 , ei )
+
+(2)
+
+i=1
+
+where sim(e1 , ei ) stands for the number of similar entities which are shared by
+e1 and each member (ei ) of the set of entity candidates; hyper(e1 , ej ) represents
+the number of categories which are shared by e1 and each member of the set
+of entity candidates. The former function is computed on SIM while the latter
+works on HYPER. The set of entity candidates is constituted by those entities
+associated to all terminological units extracted from the text, where k is the
+size of the set. Finally, for each term, the entity with the highest weight value is
+selected.
+Let us take an example. Suppose we have selected the term Cavaco Silva. To
+compute weight (Cavaco Silva, An´ıbal Cavaco Silva) given the pool of entities
+{An´ıbal Cavaco Silva, Jorge Sampaio, Lisbon}, we compute ﬁrst the sim function, which consists in counting the number of entities in the pool which are
+similar to the target entity An´ıbal Cavaco Silva according to the SIM database.
+Given the Table 1 above, only one of these entities is linked by similarity to the
+target entity. So, the result of the sim function is just 1. A similar procedure is
+performed to comput the hyper value, but using the HYPER resource.
+System Implementation. The method was implemented in Perl giving rise to
+the system called CitiusLinker. So far, it works for four languages: English, Portuguese, Spanish, and Galician.4 In order to facilitate its integration into external
+web processes, we also implemented a RESTful web service with Dancer.5 The
+web service interface can be used to annotate the text with the selected terms
+and their linked entities. Besides, it also gives as output a set of semantically
+related DBpedia entities to those found in the text (semantic enrichment), as
+well as a set of DBpedia categories that can be used to classify the text (semantic
+categorization). The web service returns HTML, XML, YAML or JSON output
+documents. It can be conﬁgured to select one of the four languages, the output
+format, and the number of relevant basic terms.
+
+3
+
+Evaluation
+
+In order to provide an evaluation of our system in the task of semantic annotation, we performed two experiments with English and Portuguese texts, using
+manually annotated test corpora.
+For English, we used the DBpedia Spotlight Evaluation Dataset [22]. The test
+corpus consists of 10 randomly selected excerpts from New York Times news, and
+each excerpt/document was manually annotated with DBpedia concepts. For
+Portuguese, we created a similar dataset from 10 diﬀerent Jornal de Not´ıcias
+news, which were manually annotated by two linguists using the Portuguese
+4
+5
+
+A demo is available at http://fegalaz.usc.es/∼gamallo/demos/semantic-demo/.
+http://fegalaz.usc.es/nlpapi.
+
+Entity Linking with Distributional Semantics
+
+185
+
+DBpedia. To build the gold standard dataset, we selected the concepts identiﬁed
+by both annotators. As a result, we obtained 130 concepts for the 10 documents.
+Both annotated datasets are freely available.6
+Notice that the evaluated task is diﬀerent from that deﬁned in the diﬀerent
+TAC-KBP Entity Linking Tracks [16]. In those tracks, the objective is not to
+identify the relevant concepts of a given document, but identifying the correct
+node/concept in DBpedia given a name mention in a document. Besides, the
+test datasets are just focused on named entities of type PER (person), ORG
+(organization), or GPE (geopolitical entity). In [5], the author describes the
+construction of two datasets for entity linking in the Portuguese and Spanish
+languages, by making use of the cross-lingual XLEL-21 dataset. This dataset is
+equivalent to the one used in TAC-KBP, and contains just person names.
+In the English evaluation, we compare our results with those of several publicly available annotation services. The results of all systems were obtained by
+using the same gold standard: DBpedia Spotlight Evaluation Dataset. Except
+CitiusLinker and Alchemy, whose F1 scores were obtained from our own experiments, the scores of the remainder systems were taken from [22].
+Table 2. F1 scores reached by diﬀerent EL systems using the DBpedia Spotlight
+Evaluation Dataset (for English)
+Systems
+
+F1 -score
+
+The Wiki Machinea
+
+59.5 %
+
+DBpedia Spotlight (best conﬁguration) 56.0 %
+CitiusLinker (best conﬁguration)
+
+55.9 %
+
+b
+
+39.1 %
+
+Alchemyc
+
+21.1 %
+
+Open Calaisd
+
+14.7 %
+
+e
+
+10.6 %
+
+Zemanta
+
+Ontos
+a
+http://thewikimachine.fbk.eu
+b
+http://www.zemanta.com
+c
+http://www.alchemyapi.com
+d
+http://www.opencalais.com
+e
+http://www.ontos.com
+
+Table 2 shows that the performance of our strategy, CitiusLinker, is in a
+competitive range for English, close to the two best systems: Wiki Machine and
+DBpedia Spotlight.
+Concerning the Portuguese evaluation, results are depicted in Table 3. Unfortunately, we only could compare our system to DBpedia Spotlight and that provided by Alchemy. To the best of our knowledge, no further EL systems for
+Portuguese are available yet. The scores reached by CitiusLinker and DBpedia
+6
+
+http://gramatica.usc.es/∼gamallo/datasets/el dataset.tar.gz.
+
+186
+
+P. Gamallo and M. Garcia
+Table 3. F1 scores reached by three systems using the Portuguese dataset
+Systems
+
+Precision Recall F1 -score
+
+CitiusLinker (best conﬁguration)
+
+45.3 %
+
+56.2 % 50.9 %
+
+DBpedia Spotlight (best conﬁguration) 45.6 %
+
+51.2 % 48.4 %
+
+Alchemy
+
+5.38 % 7.56 %
+
+12.8 %
+
+Spotlight are slightly lower than those got in the English evaluation. Both systems
+achieve similar F1 -score values after having set their parameters to ﬁnd the best
+conﬁguration. By contrast, Alchemy system dramatically drops performance.
+In this case, no parameter conﬁguration has been done since the experiments
+were performed from the API server provided by the company. The Portuguese
+DBpedia Spotlight version belongs to a multilingual system which is described
+in [4].
+The F1 -score of our system has been obtained with the best conﬁguration: 60
+most relevant basic terms (only nouns) and all multiwords. When using adjectives and verbs, the F1 -score decreases. Notice also that no multiword was ﬁltered
+out. Unlike basic terms, which can refer to very generic concepts in some cases,
+multiwords linked to DBpedia entities are likely to be domain-speciﬁc terminological expressions referring to speciﬁc concepts. By default, CitiusLinker selects
+all multiwords found in the text.
+
+4
+
+Conclusions
+
+In this article, we proposed a method for a speciﬁc entity linking subtask,
+namely semantic annotation with DBpedia concepts. The main contribution of
+our method is the use of an external entity base built by means of distributional
+similarity. This entity base is structured with similarity relationships between
+entities which are not directly related by means of the DBpedia resources. In the
+disambiguation process, our method only explores the similarity relations found
+in this entity base, as well as the direct hyperonymy relationships provided by
+DBpedia. This way, the weighting process used to disambiguate becomes simpler
+and more eﬃcient than those based on exploring several levels of organization
+through DBpedia or any other ontology. Another important contribution of our
+method is the use of diﬀerent NLP techniques for term extraction. We deﬁned
+a speciﬁc strategy for the extraction of basic terms, which is diﬀerent from
+multiword extraction. Our approach achieved competitive performance over the
+traditional methods in English, while kept similar performance in Portuguese.
+In future work, we will evaluate the results obtained for languages other than
+English and Portuguese. A deep qualitative error analysis is also required in
+order to ﬁnd the main drawbacks of our approach. It will also be adapted to be
+applied on TAC-KBP tasks in order to be compared to other EL systems.
+
+

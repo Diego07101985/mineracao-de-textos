@@ -1,4 +1,16 @@
+Concordance Comparison as a Means
+of Assembling Local Grammars
+Juliana P. C. Pirovani1(B) , Elias de Oliveira1 , and Eric Laporte2
+1
 
+Universidade Federal do Esp´ırito Santo - UFES, Av. Fernando Ferrari, 514,
+Vit´
+oria, ES 29075-910, Brazil
+jupcampos@gmail.com, elias@lcad.inf.ufes.br
+2
+Universit´e Paris-Est, LIGM, UPEM/CNRS/ENPC/ESIEE,
+77420 Champs-sur-Marne, France
+eric.laporte@univ-paris-est.fr
 
 Abstract. Named Entity Recognition for person names is an important
 but non-trivial task in information extraction. This article uses a tool
@@ -380,6 +392,20 @@ Language-Tasks 63
 
 PALAVRAS
 
+61
+
+65
+
+63
+
+LG
+
+81
+
+60
+
+69
+
 The LG has a better precision. However, as expected, it has a lower recall
 as it identiﬁes fewer types of NEs: only two subtypes of the ‘person’ category
 (‘individual’ and ‘position’) are recognized, whereas the other systems recognize
@@ -416,4 +442,60 @@ other types of NEs. We also intend to study the feasibility of building elementa
 minimizing human eﬀort during construction. The concordance comparison tool
 presented in this article might facilitate the automation of decision-making for
 this purpose.
+
+References
+1. Unitex (2018). http://unitexgramlab.org/. acesso em: 02 March 2018
+2. Amaral, D.O., Fonseca, E.B., Lopes, L., Vieira, R.: Comparative Analysis of Portuguese Named Entities Recognition Tools. In: Chair, N.C.C., et al. (eds.) Proceedings of the Ninth International Conference on Language Resources and Evaluation
+(LREC 2014), pp. 2554–2558. European Language Resources Association (ELRA),
+Reykjavik, Iceland, May 2014
+3. Baptista, J.: A Local Grammar of Proper Nouns. In: Semin´
+arios de Lingu´ıstica,
+vol. 2, pp. 21–37. Universidade do Algarve, Faro (1998)
+4. Cardoso, N.: REMBRANDT-Reconhecimento de Entidades Mencionadas Baseado
+em Rela¸co
+˜es e An´
+alise Detalhada do Texto. In. In Cristina Mota and Diana Santos
+(eds.). Desaﬁos na Avaliaa¸ca
+˜o Conjunta do Reconhecimento de Entidades Mencionadas, vol. 1, pp. 195–211. Linguateca (2008)
+` Y.
+5. Gross, M.: The Construction of Local Grammars. In ROCHE, E.; SCHABES,
+(eds.). Finite-state language processing, Language, Speech, and Communication,
+Cambridge, Mass, pp. 329–354 (1997)
+
+Concordance Comparison as a Means of Assembling Local Grammars
+
+65
+
+6. Gross, M.: A Bootstrap Method for Constructing Local Grammars. In: Bokan, N.
+(ed.) Proceedings of the Symposium on Contemporary Mathematics, pp. 229–250.
+University of Belgrad (1999)
+7. Linguateca: (2018), http://www.linguateca.pt. acesso em: 02 March 2018
+8. Manning, C.D., Sch¨
+utze, H.: Foundations of Statistical Natural Language Processing. MIT Press (1999)
+9. Mota, C., Santos, D.: Desaﬁos na Avalia¸ca
+˜o Conjunta do Reconhecimento de
+Entidades Mencionadas: O Segundo HAREM. Linguateca (2008). https://www.
+linguateca.pt/LivroSegundoHAREM/
+10. Paumier, S.: Unitex 3.1 User Manual (2016). http://unitexgramlab.org/releases/
+3.1/man/Unitex-GramLab-3.1-usermanual-en.pdf
+11. Pirovani, J.P.C., de Oliveira, E.: Extra¸ca
+˜o de Nomes de Pessoas em Textos em Portuguˆes: uma Abordagem Usando Gram´
+aticas Locais. In: Computer on the Beach
+2015, pp. 1–10. SBC, Florian´
+opolis, SC, March 2015
+12. Pirovani, J.P.C., de Oliveira, E.: CRF+LG: A hybrid approach for the portuguese
+named entity recognition. In: International Conference on Intelligent Systems
+Design and Applications (ISDA 2017), Delhi, India (2017)
+13. SAHARA: (2018). http://www.linguateca.pt/SAHARA/. acesso em: 02 March
+2018
+14. Santos, D., Cardoso, N.: Reconhecimento de Entidades Mencionadas em Portuguˆes: Documenta¸ca
+˜o e Actas do HAREM, a Primeira Avalia¸ca
+˜o Conjunta na
+´
+Area.
+Linguateca (2007). http://www.linguateca.pt/aval conjunta/LivroHAREM/
+Livro-SantosCardoso2007.pdf
+15. Shaalan, K.: A Survey of Arabic Named Entity Recognition and Classiﬁcation. Comput. Linguistics 40(2), 469–510 (2014). https://doi.org/10.1162/COLI
+a 00178
+
 

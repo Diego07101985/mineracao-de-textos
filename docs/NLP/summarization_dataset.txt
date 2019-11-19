@@ -1,4 +1,13 @@
+RulingBR: A Summarization Dataset
+for Legal Texts
+Diego de Vargas Feij´
+o(B)
 
+and Viviane Pereira Moreira
+
+Federal University of Rio Grande do Sul, Porto Alegre, RS, Brazil
+{dvfeijo,viviane}@inf.ufrgs.br
+http://www.inf.ufrgs.br/
 
 Abstract. Text summarization consists in generating a shorter version
 of an input document, which captures its main ideas. Despite the recent
@@ -13,6 +22,12 @@ Supreme Court. We describe how the dataset was assembled and we also
 report on the results of standard summarization methods which may
 serve as a baseline for future works.
 Keywords: Summarization
+
+1
+
+· Dataset · Legal · Law
+
+Introduction
 
 Text summarization is an important task in Natural Language Processing. It
 consists in generating a shorter version of the text given as input, capturing
@@ -31,6 +46,13 @@ the title can generally obtain good results by simply extracting the ﬁrst few
 words of the article. The excessive focus on this type of text introduces bias in
 the techniques being developed. For example, Google’s Textsum model [24] for
 c Springer Nature Switzerland AG 2018
+A. Villavicencio et al. (Eds.): PROPOR 2018, LNAI 11122, pp. 255–264, 2018.
+https://doi.org/10.1007/978-3-319-99722-3_26
+
+256
+
+D. de Vargas Feij´
+o and V. P. Moreira
 
 summarization uses just the ﬁrst two paragraphs of the article. Another possible
 approach is to weight the sentences in descending order from the start, in favor
@@ -62,6 +84,12 @@ are newspaper articles annotated from the Brazilian Folha de S˜
 ao Paulo
 newspaper.
 CSTNews [1] is another annotated corpus. It is composed of 50 text collections
+and each collection has about four documents. It uses texts from the following
+Brazilian news sources Folha de S˜
+ao Paulo, Estad˜
+ao, O Globo, Jornal do
+Brasil, and Gazeta do Povo.
+The most widely used datasets are available in English and are described
 below.
 The Annotated Gigaword [18] is the largest static corpus of English news
 documents available [15]. It contains over 10 million documents from seven
@@ -75,6 +103,7 @@ composed of about 300 thousand articles.
 
 RulingBR: A Summarization Dataset for Legal Texts
 
+257
 
 Opinosis [8] contains customer reviews about a product they bought. Each
 product description has ﬁve reviews. This is a small dataset containing only
@@ -86,6 +115,8 @@ RulingBR diﬀers from these related datasets because in the legal domain,
 documents are generally lengthier and their structure is very diﬀerent from
 the structure of news articles. As a consequence, the assumption that the most
 important ideas will be in the ﬁrst few sentences is not valid.
+
+3
 
 A Summarization Dataset with Legal Documents
 
@@ -100,6 +131,10 @@ portal2 .
 Structure of the Documents
 
 The full decision document, called (inteiro teor ), is composed of four parts,
+namely: “Ementa”, “Ac´
+ord˜
+ao”, “Relat´
+orio”, and “Voto”, which we now describe.
 – The Ementa is a brief summary of the main topics discussed in each case
 and how the judges decided. We will be using the Ementa as the reference
 summary that automatic methods should aim to produce. In our corpus, the
@@ -119,6 +154,44 @@ tends to be the largest section covering around 69% of the full content.
 The Ementa is useful for lawyers and other legal professionals when they
 are searching for decisions about a given topic. A good text should not be long,
 generally less than one page, making it a good summary of the full decision.
+1
+2
+
+https://duc.nist.gov/.
+http://www.stf.jus.br/.
+
+258
+
+D. de Vargas Feij´
+o and V. P. Moreira
+
+˜o em recurso extraordina
+´rio com agravo. 2. Decisa
+˜o
+{“ementa”: “Embargos de declarac¸a
+monocr´
+atica. (...) 5. Agravo regimental a que se nega provimento.”,
+“acordao”: “Vistos, relatados e discutidos estes autos, acordam os ministros do Supremo
+Tribunal Federal, em Segunda Turma, (...), por unanimidade, converter os embargos de
+declarac¸a
+˜o em agravo regimental e, a este, negar provimento, nos termos do voto do Relator.”,
+˜o opostos contra decisa
+˜o que negou
+“relatorio”: “(...) Trata-se de embargos de declara¸ca
+provimento a recurso, ao fundamento de que a natureza da mat´eria versada nos autos
+reveste-se de ´ındole infraconstitucional. Aponta-se viola¸ca
+˜o direta a
+` Constituic¸a
+˜o Federal,
+em especial, aos artigos (...).”,
+“voto”: “(...) Tendo em vista o princ´ıpio da economia processual, recebo os embargos de
+declarac¸a
+˜o como agravo regimental e, desde logo, passo a aprecia
+´-lo. (...)”}
+
+Fig. 1. Example of a document already divided into sections in JSON format.
+
+3.2
 
 Data Collection
 
@@ -283,6 +356,9 @@ longer. So, for a fair comparison, we used the scores of the runs in which the
 absolute diﬀerences between the length of the generated summary and its reference is minimized. Figure 3 shows the scores for Gensim using the desired output
 of 80 words, Luhn’s algorithm with a ﬁxed output of one sentence, LexRank and
 TextRank algorithms with a ﬁxed output of two sentences.
+
+262
+
 D. de Vargas Feij´
 o and V. P. Moreira
 
@@ -292,6 +368,158 @@ four sentences in the Sumy library.
 Table 1. Results of the summarization using diﬀerent lengths of outputs. Best results
 per metric are shown in bold.
 Algorithm Length Abs Dif
+Gensim
+
+Rouge-1
+F
+P
+
+R
+
+Rouge-2
+F
+P
+
+R
+
+Rouge-L
+F
+P
+
+R
+
+60
+
+467,138 0.27 0.30 0.11 0.11 0.14 0.27 0.14
+
+0.20 0.16
+
+Gensim
+
+80
+
+448,162 0.29 0.29 0.14 0.12 0.14 0.32 0.15
+
+0.19 0.19
+
+Gensim
+
+100
+
+497,309 0.30 0.28 0.16 0.13 0.13 0.37 0.16
+
+0.17 0.22
+
+Gensim
+
+120
+
+587,463 0.30 0.27 0.18 0.13 0.12 0.40 0.15
+
+0.16 0.25
+
+Luhn
+
+1
+
+475,039 0.23 0.29 0.09 0.10 0.14 0.23 0.13
+
+0.21 0.14
+
+LexRank
+
+1
+
+616,140 0.21 0.35 0.07 0.09 0.16 0.18 0.11
+
+0.27 0.11
+
+TextRank
+
+1
+
+544,613 0.22 0.33 0.08 0.10 0.17 0.20 0.12
+
+0.26 0.13
+
+Luhn
+
+2
+
+503,009 0.27 0.27 0.14 0.12 0.13 0.32 0.15
+
+0.17 0.20
+
+LexRank
+
+2
+
+498,650 0.27 0.32 0.11 0.11 0.14 0.28 0.15
+
+0.21 0.17
+
+TextRank
+
+2
+
+543,740 0.24 0.31 0.12 0.11 0.15 0.27 0.14
+
+0.21 0.18
+0.15 0.25
+
+Luhn
+
+3
+
+729,632 0.29 0.26 0.17 0.13 0.12 0.40 0.15
+
+LexRank
+
+3
+
+513,033 0.29 0.30 0.15 0.12 0.13 0.35 0.16a 0.19 0.21
+
+TextRank
+
+3
+
+673,067 0.26 0.29 0.15 0.12 0.14 0.33 0.14
+
+Luhn
+
+4
+
+1,025,284 0.30 0.25 0.20 0.13 0.11 0.45 0.14
+
+LexRank
+
+4
+
+0.18 0.22
+0.13 0.28
+a
+
+609,894 0.31 0.29 0.17 0.13 0.12 0.40 0.16
+
+0.17 0.25
+
+TextRank
+4
+859,861 0.27 0.27 0.17 0.12 0.13 0.38 0.14
+a
+Both had exactly the same score.
+
+0.16 0.25
+
+Fig. 3. F-Score and precision for the diﬀerent summarization algorithms.
+
+RulingBR: A Summarization Dataset for Legal Texts
+
+5
+
+263
+
+Conclusion
 
 In this paper, we presented the RulingBR dataset, a corpus that can be used
 for natural language summarization. It diﬀers from the existing corpora because
@@ -314,3 +542,86 @@ orio, and several ideas discussed in the Voto.
 As a future work, we intend to test Neural models for summarization in order
 to identify the relevant aspects of the document and generate a summary in the
 style produced by a human.
+
+References
+1. Aleixo, P., Pardo, T.A.S.: CSTNews: um c´
+orpus de textos jornal´ısticos anotados
+segundo a teoria discursiva multidocumento CST (cross-document structure theory) (2008)
+2. Barrios, F., L´
+opez, F., Argerich, L., Wachenchauzer, R.: Variations of the
+similarity function of TextRank for automated summarization. arXiv preprint
+arXiv:1602.03606 (2016)
+3. Belica, M.: Sumy: module for automatic summarization of text documents and
+HTML pages, April 2018. https://github.com/miso-belica/sumy
+4. Bird, S.: NLTK: the natural language toolkit. In: Proceedings of the COLING/ACL
+on Interactive Presentation Sessions, COLING-ACL 2006, pp. 69–72. Association
+for Computational Linguistics, Stroudsburg (2006)
+5. Chen, D., Bolton, J., Manning, C.D.: A thorough examination of the CNN/Daily
+mail reading comprehension task. CoRR abs/1606.02858 (2016). http://arxiv.org/
+abs/1606.02858
+6. Collovini, S., Carbonel, T.I., Fuchs, J., Coelho, J.C., Rino, L., Vieira, R.:
+Summ-it: Um corpus anotado com informa¸co
+˜es discursivas visando `
+a sumariza¸ca
+˜o
+autom´
+atica. In: V Workshop em Tecnologia da Informa¸ca
+˜o e da Linguagem
+Humana, Congresso da SBC, pp. 1605–1614 (2007)
+7. Erkan, G., Radev, D.R.: LexRank: graph-based lexical centrality as salience in text
+summarization. J. Artif. Intell. Res. 22, 457–479 (2004)
+8. Ganesan, K., Zhai, C., Han, J.: Opinosis: a graph-based approach to abstractive
+summarization of highly redundant opinions. In: Proceedings of the 23rd International Conference on Computational Linguistics, pp. 340–348. Association for
+Computational Linguistics (2010)
+
+264
+
+D. de Vargas Feij´
+o and V. P. Moreira
+
+9. Huyck, C., Orengo, V.: A stemming algorithm for the Portuguese language. In:
+International Symposium on String Processing and Information Retrieval, SPIRE,
+p. 0186, November 2001
+10. Kleinberg, J.M.: Authoritative sources in a hyperlinked environment. J. ACM
+46(5), 604–632 (1999)
+11. Lin, C.Y.: Rouge: a package for automatic evaluation of summaries. Text Summarization Branches Out (2004)
+12. Luhn, H.P.: The automatic creation of literature abstracts. IBM J. Res. Dev. 2(2),
+159–165 (1958)
+13. Mihalcea, R., Tarau, P.: TextRank: bringing order into texts. In: Proceedings of
+EMNLP 2004 and the 2004 Conference on Empirical Methods in Natural Language
+Processing, July 2004
+14. Nallapati, R., Xiang, B., Zhou, B.: Sequence-to-sequence RNNs for text summarization. CoRR abs/1602.06023 (2016). http://arxiv.org/abs/1602.06023
+15. Napoles, C., Gormley, M., Van Durme, B.: Annotated gigaword. In: Proceedings
+of the Joint Workshop on Automatic Knowledge Base Construction and WebScale Knowledge Extraction, AKBC-WEKEX 2012, pp. 95–100. Association for
+Computational Linguistics, Stroudsburg (2012)
+16. Page, L., Brin, S., Motwani, R., Winograd, T.: The PageRank citation
+ranking: bringing order to the web. In: Proceedings of the 7th International World Wide Web Conference, Brisbane, Australia, pp. 161–172 (1998).
+citeseer.nj.nec.com/page98pagerank.html
+17. Pardo, T.A.S., Rino, L.H.M.: Tem´
+ario: Um corpus para sumariza¸ca
+˜o autom´
+atica
+de textos. Universidade de S˜
+ao Carlos, Relat´
+orio T´ecnico, S˜
+ao Carlos (2003)
+18. Parker, R., Graﬀ, D., Kong, J., Chen, K., Maeda, K.: English gigaword ﬁfth edition,
+linguistic data consortium. Google Scholar (2011)
+19. Paulus, R., Xiong, C., Socher, R.: A deep reinforced model for abstractive summarization. arXiv preprint arXiv:1705.04304 (2017)
+ˇ uˇrek, R., Sojka, P.: Software framework for topic modelling with large cor20. Reh˚
+pora. In: Proceedings of the LREC 2010 Workshop on New Challenges for NLP
+Frameworks, pp. 45–50. ELRA, Valletta, May 2010
+21. ScrapingHub: Scrapy - a fast and powerful scraping and web crawling framework
+(2018). https://scrapy.org
+22. See, A., Liu, P.J., Manning, C.D.: Get to the point: summarization with pointergenerator networks. arXiv preprint arXiv:1704.04368 (2017)
+23. Xiao: PyTeaser: Summarizes news articles, April 2018. https://github.com/
+xiaoxu193/PyTeaser
+24. Xin Pan, P.L.: Models: models and examples built with TensorFlow, April 2018.
+https://github.com/tensorﬂow/models
+25. Yin, W., Pei, Y.: Optimizing sentence modeling and selection for document summarization. In: Proceedings of the 24th International Conference on Artiﬁcial Intelligence, IJCAI 2015, pp. 1383–1389. AAAI Press (2015)
+26. Zhang, X., Lapata, M.: Sentence simpliﬁcation with deep reinforcement learning.
+In: Proceedings of the 2017 Conference on Empirical Methods in Natural Language
+Processing, EMNLP 2017, Copenhagen, Denmark, 9–11 September 2017, pp. 584–
+594 (2017)
+
+
